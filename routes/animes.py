@@ -1,15 +1,17 @@
 from fastapi import APIRouter, HTTPException
 from databases.animes import (get_all_animes,create_anime,get_one_anime,delete_anime)
 from models.anime import Anime,UpdateAnime
+from fastapi_pagination import Page, add_pagination, paginate
 
 
 
 anime = APIRouter()
 
-@anime.get('/api/animes')  
+@anime.get('/api/animes', response_model=Page[Anime])  
 async def get_anime():
     response = await get_all_animes()
-    return response
+    return paginate(response)  
+add_pagination(anime)
 
 
 @anime.post('/api/create_anime', response_model=Anime)
